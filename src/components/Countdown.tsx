@@ -1,7 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { StyleSheet, View, Text, TextInput, StatusBar, TouchableOpacity, Platform, SafeAreaView } from "react-native";
-import type { PropsWithChildren } from "react";
-import { setTextRange } from "typescript";
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Vibration } from "react-native";
 
 type CountdownProps = {
     setFocusStatus: (currentlyFocusing: boolean) => void;
@@ -11,14 +9,20 @@ type CountdownProps = {
 
 export default function Countdown({ setTimeList, timeList, setFocusStatus }: CountdownProps) {
     const intervalRef = useRef(null);
-    const [seconds, setSeconds] = useState(0);
-    const [minutes, setMinutes] = useState(1);
+    const [seconds, setSeconds] = useState(10);
+    const [minutes, setMinutes] = useState(0);
     const [startTimer, setStartTimer] = useState(false);
     const [pause, setPause] = useState(true);
-    // const timerVals = [10, 15, 20];
-    const timerVals = [1, 2, 3];
+    const timerVals = useRef([10, 15, 20]);
     const [totalSeconds, setTotalSeconds] = useState(0);
     const [totalMinutes, setTotalMinutes] = useState(-1);
+    const [done, setIsDone] = useState(false);
+    const ONE_SECOND_IN_MS = useRef(1000);
+    const PATTERN = useRef([
+        0 * ONE_SECOND_IN_MS.current,
+        1 * ONE_SECOND_IN_MS.current,
+        0 * ONE_SECOND_IN_MS.current,
+      ]);
 
     useEffect(() => {
         if (startTimer || !pause) {
@@ -29,8 +33,13 @@ export default function Countdown({ setTimeList, timeList, setFocusStatus }: Cou
                     setTotalMinutes(totalMinutes + 1);
                 }
                 else if ((seconds == 0) && (minutes == 0)) {
-                    setTimeList([...timeList, `${totalMinutes}m${totalSeconds}s`]);
-                    setFocusStatus(false);
+                    if (totalMinutes < 0) setTimeList([...timeList, `0m${totalSeconds}s`]);
+                    else setTimeList([...timeList, `${totalMinutes}m${totalSeconds}s`]);
+                    setIsDone(true);
+                    setPause(true);
+                    setStartTimer(false);
+                    // setFocusStatus(false);
+                    Vibration.vibrate(PATTERN.current, true);
                 }
                 else {
                     setSeconds(seconds-1);
@@ -38,10 +47,6 @@ export default function Countdown({ setTimeList, timeList, setFocusStatus }: Cou
                 }
             }, 1000);
             
-            // else if ((seconds == 0) && (minutes == 0)) {
-            //     setTimeList([...timeList, `${totalMinutes}m${totalSeconds}s`]);
-            //     setFocusStatus(false);
-            // }
             return () => {
                 clearInterval(intervalRef.current);
             }
@@ -55,7 +60,7 @@ export default function Countdown({ setTimeList, timeList, setFocusStatus }: Cou
             </View>
             <View style={styles.buttonsBox}>
             {
-                timerVals.map((v, i) => <TouchableOpacity style={styles.button} onPress={() => {
+                timerVals.current.map((v, i) => <TouchableOpacity style={styles.button} onPress={() => {
                     setStartTimer(true);
                     setPause(false);
                     setMinutes(v);
@@ -72,7 +77,9 @@ export default function Countdown({ setTimeList, timeList, setFocusStatus }: Cou
                     <Text>{pause && !startTimer ? "Start" : "Pause"}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={() => {
-                    setTimeList([...timeList, `${totalMinutes}m${totalSeconds}s`]);
+                    if (totalMinutes < 0) setTimeList([...timeList, `0m${totalSeconds}s`]);
+                    else setTimeList([...timeList, `${totalMinutes}m${totalSeconds}s`]);
+                    Vibration.cancel()
                     setFocusStatus(false);
                 }}>
                     <Text>Stop</Text>
@@ -86,7 +93,6 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         flex: 1,
-        // borderWidth: 4,
         borderColor: 'black',
         alignItems: 'center',
         justifyContent: 'center',

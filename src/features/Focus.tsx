@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, TextInput, StatusBar, TouchableOpacity, Platform, SafeAreaView } from "react-native";
-import type { PropsWithChildren } from "react";
+import { StyleSheet, Text, TextInput, StatusBar, TouchableOpacity, Platform, SafeAreaView } from "react-native";
 
 type FocusProps = {
     addTask: (taskName: string[]) => void;
@@ -9,7 +8,7 @@ type FocusProps = {
 }
 
 export const Focus = ({ addTask, existingTasks, focusStart }: FocusProps) => {
-    const [taskName, setTaskName] = useState(null);
+    const [taskName, setTaskName] = useState("");
 
     return(
         <SafeAreaView style={styles.container}>
@@ -19,8 +18,13 @@ export const Focus = ({ addTask, existingTasks, focusStart }: FocusProps) => {
                 style={styles.inputField}
             />
             <TouchableOpacity style={styles.button} onPress={() => {
-                addTask([...existingTasks, taskName]);
-                focusStart(true);
+                if (taskName !== "") {
+                    addTask([...existingTasks, taskName]);
+                    focusStart(true);
+                } 
+                else {
+                    alert("WRITE SOMETHING!");
+                }
                 }}>
                 <Text style={{fontWeight: 'bold', fontSize: 22}}>+</Text>
             </TouchableOpacity>

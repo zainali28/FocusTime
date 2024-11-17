@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { StyleSheet, View, Text, SafeAreaView, Platform, StatusBar } from "react-native";
+import { StyleSheet, Text, SafeAreaView, Platform, StatusBar, FlatList } from "react-native";
 import { Focus } from './src/features/Focus'
 import Countdown from "./src/components/Countdown";
 
@@ -13,11 +13,15 @@ export default function App() {
       {!currentlyFocusing ? 
         <SafeAreaView style={styles.container}>
           <Focus addTask={setTaskList} existingTasks={taskList} focusStart={setCurrentlyFocusing} /> 
-          {taskList.map((v, i) => <Text key={i}>Focused on {v} for {timeList[i]}</Text>)}
+          <FlatList
+            style={{marginTop: 20}}
+            data={taskList}
+            renderItem={({item}) => <Text style={{margin: 10}}>Focused on {item} for {timeList[taskList.indexOf(item)]}</Text>}
+          />
         </SafeAreaView>
         : 
       <SafeAreaView style={styles.counter}>
-        <Text>Focusing on {taskList[taskList.length - 1]}</Text>
+        <Text style={{fontSize: 32}}>Focusing on {taskList[taskList.length - 1]}</Text>
         <Countdown setTimeList={setTimeList} timeList={timeList} setFocusStatus={setCurrentlyFocusing} />
       </SafeAreaView>}
     </SafeAreaView>
