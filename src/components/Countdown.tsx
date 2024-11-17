@@ -3,30 +3,40 @@ import { StyleSheet, View, Text, TextInput, StatusBar, TouchableOpacity, Platfor
 import type { PropsWithChildren } from "react";
 
 type CountdownProps = {
-    startSeconds: number,
-    setCurrentSeconds: (seconds: number) => void
+    setFocusStatus: (currentlyFocusing: boolean) => void;
 }
 
-export default function Countdown({ startSeconds, setCurrentSeconds }) {
+export default function Countdown({ setFocusStatus }: CountdownProps) {
     const intervalRef = useRef(null);
-    const [seconds, setSeconds] = useState(startSeconds);
+    const [seconds, setSeconds] = useState(10);
+    const [startTimer, setStartTimer] = useState(false);
+    const timerVals = [10, 15, 20];
 
     useEffect(() => {
-        
-        intervalRef.current = seconds > 0 && setInterval(() => {
-            setSeconds(seconds-1);
-        }, 1000);
-        setCurrentSeconds(seconds);
-        return () => {
-            clearInterval(intervalRef.current);
+        if (startTimer) {
+            intervalRef.current = seconds > 0 && setInterval(() => {
+                setSeconds(seconds-1);
+            }, 1000);
+            seconds == 0 && setFocusStatus(false);
+            return () => {
+                clearInterval(intervalRef.current);
+            }
         }
     })
 
     return(
         <SafeAreaView style={styles.container}>
-            <View style={styles.container}>
+            {
+                !startTimer && timerVals.map((v, i) => <TouchableOpacity onPress={() => {
+                    setStartTimer(true);
+                    setSeconds(v);
+                }} key={i}>
+                    <Text>{v}</Text>
+                </TouchableOpacity>)
+            }
+            {startTimer && <View style={styles.container}>                
                 <Text style={styles.time}>{seconds}</Text>
-            </View>
+            </View>}
         </SafeAreaView>
     );
 }

@@ -3,12 +3,14 @@ import { StyleSheet, View, Text, TextInput, StatusBar, TouchableOpacity, Platfor
 import type { PropsWithChildren } from "react";
 
 type FocusProps = {
-    addTask: (taskName: string) => void;
+    addTask: (taskName: string[]) => void;
+    existingTasks: string[];
+    focusStart: (currentlyFocusing: boolean) => void;
 }
 
-export const Focus = ({ addTask }: FocusProps) => {
+export const Focus = ({ addTask, existingTasks, focusStart }: FocusProps) => {
     const [taskName, setTaskName] = useState(null);
-    console.log(taskName);
+    // console.log(taskName);
 
     return(
         <SafeAreaView style={styles.container}>
@@ -17,7 +19,10 @@ export const Focus = ({ addTask }: FocusProps) => {
                 placeholder="Write name of the Task"
                 style={styles.inputField}
             />
-            <TouchableOpacity style={styles.button} onPress={() => addTask(taskName)}>
+            <TouchableOpacity style={styles.button} onPress={() => {
+                addTask([...existingTasks, taskName]);
+                focusStart(true);
+                }}>
                 <Text style={{fontWeight: 'bold', fontSize: 22}}>+</Text>
             </TouchableOpacity>
         </SafeAreaView>
