@@ -10,7 +10,6 @@ type FocusProps = {
 
 export const Focus = ({ addTask, existingTasks, focusStart }: FocusProps) => {
     const [taskName, setTaskName] = useState(null);
-    // console.log(taskName);
 
     return(
         <SafeAreaView style={styles.container}>
@@ -45,16 +44,13 @@ const styles = StyleSheet.create({
         flex: 0.80,
         height: 40,
         width: 40,
-        // borderColor: 'gray',
         justifyContent: 'center',
         borderBottomColor: 'black',
         borderBottomWidth: 2,
     },
     button: {
-        // borderWidth: 2,
         height: 40,
         width: 40,
-        // borderColor: 'pink',
         justifyContent: 'center',
         alignItems: 'center',
     },

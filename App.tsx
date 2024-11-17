@@ -1,4 +1,4 @@
-    import React, {useState} from "react";
+import React, {useState} from "react";
 import { StyleSheet, View, Text, SafeAreaView, Platform, StatusBar } from "react-native";
 import { Focus } from './src/features/Focus'
 import Countdown from "./src/components/Countdown";
@@ -7,13 +7,13 @@ export default function App() {
   const [taskList, setTaskList] = useState([]);
   const [timeList, setTimeList] = useState([]);
   const [currentlyFocusing, setCurrentlyFocusing] = useState(false);
-  // const [stop, setStop] = useState(false);
+
   return(
     <SafeAreaView style={styles.container}>
       {!currentlyFocusing ? 
         <SafeAreaView style={styles.container}>
           <Focus addTask={setTaskList} existingTasks={taskList} focusStart={setCurrentlyFocusing} /> 
-          {taskList.map((v, i) => <Text key={i}>Focused on {v} for {timeList[i]}s</Text>)}
+          {taskList.map((v, i) => <Text key={i}>Focused on {v} for {timeList[i]}</Text>)}
         </SafeAreaView>
         : 
       <SafeAreaView style={styles.counter}>
@@ -30,9 +30,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-    // borderWidth: 4, 
-    // borderColor: 'yellow',
-    // backgroundColor: ''
   },
   container: {
     paddingTop: Platform.OS === 'android' && StatusBar.currentHeight,
