@@ -9,8 +9,8 @@ type CountdownProps = {
 
 export default function Countdown({ setTimeList, timeList, setFocusStatus }: CountdownProps) {
     const intervalRef = useRef(null);
-    const [seconds, setSeconds] = useState(10);
-    const [minutes, setMinutes] = useState(0);
+    const [seconds, setSeconds] = useState(0);
+    const [minutes, setMinutes] = useState(10);
     const [startTimer, setStartTimer] = useState(false);
     const [pause, setPause] = useState(true);
     const timerVals = useRef([10, 15, 20]);
